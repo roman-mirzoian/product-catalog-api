@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 
 export interface FilterValues {
@@ -29,7 +29,11 @@ export function FilterBar({ initialValue, onFilterChange, delayMs = 300 }: Filte
   const [inStock, setInStock] = useState(initialValue.inStock);
   const [sort, setSort] = useState(initialValue.sort);
 
-  const debouncedText = useDebounce({ category, minPrice, maxPrice }, delayMs);
+  const textFilters = useMemo(
+    () => ({ category, minPrice, maxPrice }),
+    [category, minPrice, maxPrice]
+  );
+  const debouncedText = useDebounce(textFilters, delayMs);
   const isFirstRun = useRef(true);
 
   useEffect(() => {
